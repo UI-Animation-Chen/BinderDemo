@@ -17,7 +17,11 @@ public class MyBinder extends Binder {
     protected boolean onTransact(int code, @NonNull Parcel data, @Nullable Parcel reply, int flags) throws RemoteException {
         switch (code) {
             case MY_BINDER_1:
-                reply.writeString("form binder 1, process: " + Process.myPid());
+                StringBuilder sb = new StringBuilder(1024 * 1024);
+                for (int i = 0; i < (1024 * 1024 - 8192) / 2 - 4; i ++) {
+                    sb.append((char)(97 + (i % 26)));
+                }
+                reply.writeString(sb.toString());
                 return true;
             case MY_BINDER_2:
                 reply.writeString("form binder 2, process: " + Process.myPid());
