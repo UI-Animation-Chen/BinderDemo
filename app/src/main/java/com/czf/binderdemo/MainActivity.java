@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btn2;
 
     private IBinder service;
+    private ServiceConnection conn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     Parcel reply = Parcel.obtain();
                     service.transact(MY_BINDER_1, Parcel.obtain(), reply, 0); // 0 for normal rpc
                     Log.d("--==--", reply.readString());
+                    reply.recycle();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     Parcel reply = Parcel.obtain();
                     service.transact(MY_BINDER_2, Parcel.obtain(), reply, 0); // 0 for normal rpc
                     Log.d("--==--", reply.readString());
+                    reply.recycle();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindMyService() {
-        bindService(new Intent(getApplicationContext(), MyService.class), new ServiceConnection() {
+        conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.d("--==-- connected", name.toShortString() + ", process: " + Process.myPid());
@@ -85,7 +88,14 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.service = null;
 
             }
-        }, Service.BIND_AUTO_CREATE);
+        };
+        bindService(new Intent(getApplicationContext(), MyService.class), conn, Service.BIND_AUTO_CREATE);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(conn);
+        conn = null;
+    }
 }

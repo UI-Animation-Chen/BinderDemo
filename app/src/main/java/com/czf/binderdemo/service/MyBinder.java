@@ -18,13 +18,16 @@ public class MyBinder extends Binder {
         switch (code) {
             case MY_BINDER_1:
                 StringBuilder sb = new StringBuilder(1024 * 1024);
-                for (int i = 0; i < (1024 * 1024 - 8192) / 2 - 4; i ++) {
+                // 1M - 8K, java char occupy 2B.
+                for (int i = 0; i < (1024 * 1016) / 2 - 19; i ++) {
                     sb.append((char)(97 + (i % 26)));
                 }
                 reply.writeString(sb.toString());
+                reply.recycle();
                 return true;
             case MY_BINDER_2:
                 reply.writeString("form binder 2, process: " + Process.myPid());
+                reply.recycle();
                 return true;
             default:
                 return super.onTransact(code, data, reply, flags);
