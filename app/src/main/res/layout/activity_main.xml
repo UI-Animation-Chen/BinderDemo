@@ -12,12 +12,24 @@
         android:id="@+id/binder_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="binder1" />
 
     <Button
         android:id="@+id/binder_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="binder2" />
+
+    <Button
+        android:id="@+id/binder_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="binder multi-thread" />
+
+    <Button
+        android:id="@+id/start_second_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start second activity" />
 
 </LinearLayout>

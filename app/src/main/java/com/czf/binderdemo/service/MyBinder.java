@@ -26,7 +26,7 @@ public class MyBinder extends Binder {
                 reply.recycle();
                 return true;
             case MY_BINDER_2:
-                reply.writeString("form binder 2, process: " + Process.myPid());
+                reply.writeString("form binder 2, thread: " + Thread.currentThread().getName());
                 reply.recycle();
                 return true;
             default:

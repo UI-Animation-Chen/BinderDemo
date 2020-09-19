@@ -24,9 +24,6 @@ import static com.czf.binderdemo.service.MyBinder.MY_BINDER_2;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btn1;
-    private Button btn2;
-
     private IBinder service;
     private ServiceConnection conn;
 
@@ -40,9 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        btn1 = findViewById(R.id.binder_1);
-        btn2 = findViewById(R.id.binder_2);
-        btn1.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.binder_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (service == null) return;
@@ -57,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        btn2.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.binder_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (service == null) return;
@@ -72,6 +67,39 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.binder_3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (service == null) return;
+                transactMutilple();
+            }
+        });
+        findViewById(R.id.start_second_activity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, SecondActivity.class);
+//                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+        });
+    }
+
+    private void transactMutilple() {
+        for (int i = 0; i < 100; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Parcel reply = Parcel.obtain();
+                        service.transact(MY_BINDER_2, Parcel.obtain(), reply, 0); // 0 for normal rpc
+                        Log.d("--==--", "" + reply.readString());
+                        reply.recycle();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 
     private void bindMyService() {
